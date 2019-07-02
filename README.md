@@ -5,4 +5,4 @@
 - 微信好友和群查看管理
 
 
-![](./static/QR_code.jpg)
+![](/home/jiao/develop/bot_project/WXBotManage/static/wxbot_manage.png)
