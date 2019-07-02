@@ -1,0 +1,17 @@
+/handlers/__pycache__/
+/__pycache__/
+/tools/__pycache__/
+/weixin_bot/__pycache__/
+/weixin_bot/connect_bot/__pycache__/
+/weixin_bot/massage/__pycache__/
+/weixin_bot/massage_handle/__pycache__/
+/weixin_bot/tuling/__pycache__/
+/weixin_bot/client/__pycache__/
+/models/__pycache__/
+/models/connect/__pycache__/
+/models/mysql/__pycache__/
+/models/mongodb/__pycache__/
+/static/
+/.idea/
+/cache/__pycache__/
+
