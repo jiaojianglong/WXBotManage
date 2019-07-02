@@ -5,4 +5,4 @@
 - 微信好友和群查看管理
 
 
-![](/home/jiao/develop/bot_project/WXBotManage/static/wxbot_manage.png)
+![微信管理](https://github.com/jiaojianglong/WXBotManage/blob/master/static/wxbot_manage.png)
