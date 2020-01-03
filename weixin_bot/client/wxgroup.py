@@ -5,15 +5,15 @@
 
 from weixin_bot.client.wxmember import WXMember
 
-class WXGroup():
 
-    def __init__(self,wxbot,group_id):
+class WXGroup():
+    def __init__(self, wxbot, group_id):
         self.wxbot = wxbot
         self.group_id = group_id
 
-
     def get_members(self):
-        res = self.wxbot.client.sendmassage.sendmsg_getreturn("2|%s|%s" % (self.wxbot.bot_id, self.group_id))
+        res = self.wxbot.client.sendmassage.sendmsg_getreturn(
+            "2|%s|%s" % (self.wxbot.bot_id, self.group_id))
         if res == "error":
             return []
         res = res.replace("QYLB‘", "")
@@ -27,11 +27,11 @@ class WXGroup():
                     member_dict['member_name'] = member_list[1]
                     member_dict['member_wxid'] = member_list[2]
                     members.append(member_dict)
-                except:
+                except Exception:
                     pass
         return members
 
-    def get_members_by_name(self,name):
+    def get_members_by_name(self, name):
         members = self.get_members()
         for member in members:
             if member.get("member_name") == name:
@@ -41,5 +41,5 @@ class WXGroup():
             raise Exception("not exists")
         return member_wxid
 
-    def member(self,member_id):
-        return WXMember(self,member_id)
+    def member(self, member_id):
+        return WXMember(self, member_id)

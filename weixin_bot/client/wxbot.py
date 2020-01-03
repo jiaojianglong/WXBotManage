@@ -6,11 +6,11 @@
 from weixin_bot.client.wxfrinend import WxFriend
 from weixin_bot.client.wxgroup import WXGroup
 
+
 class WXBot():
-    def __init__(self,client,bot_id):
+    def __init__(self, client, bot_id):
         self.client = client
         self.bot_id = bot_id
-
 
     def get_bot_message(self):
         """
@@ -22,7 +22,6 @@ class WXBot():
             if bot["weixin_num"] == self.bot_id:
                 return bot
         return None
-
 
     def get_friends(self):
         """
@@ -49,7 +48,7 @@ class WXBot():
                     friend_dict["friend_headportrait"] = friend_info[7]
                     friend_dict["friend_status"] = friend_info[8]
                     friends_list.append(friend_dict)
-                except:
+                except Exception:
                     print("有问题的好友：" + friend)
                     pass
         return friends_list
@@ -66,8 +65,8 @@ class WXBot():
                 groups.append(friend)
         return groups
 
-    def friend(self,friend_id):
-        return WxFriend(self,friend_id)
+    def friend(self, friend_id):
+        return WxFriend(self, friend_id)
 
-    def group(self,group_id):
-        return WXGroup(self,group_id)
+    def group(self, group_id):
+        return WXGroup(self, group_id)

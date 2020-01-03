@@ -5,7 +5,6 @@
 
 
 class WXMember():
-
-    def __init__(self,wxgroup,member_id):
+    def __init__(self, wxgroup, member_id):
         self.wxgroup = wxgroup
         self.member_id = member_id

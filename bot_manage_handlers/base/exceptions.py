@@ -14,32 +14,38 @@ class RequestTimesError(HandlerError):
     """
     请求次数超限制
     """
+
     def __init__(self):
         super(RequestTimesError, self).__init__(
             4003, "请求次数超限制")
         self.arg_name = "请求次数超限制"
         self.reason = "请求次数超限制"
 
+
 class IllegalRequestError(HandlerError):
     """
     非法请求
     """
+
     def __init__(self):
         super(IllegalRequestError, self).__init__(
             4004, "非法请求")
         self.arg_name = "非法请求"
         self.reason = "非法请求"
 
+
 class RequestEncryptError(HandlerError):
     """
     请求加密错误
     """
+
     def __init__(self):
         super(RequestEncryptError, self).__init__(
             4005, "请求加密错误")
         self.arg_name = "请求加密错误"
         self.reason = "请求加密错误"
-        
+
+
 class MissingArgumentError(HandlerError):
     """缺失请求参数错误"""
 
@@ -60,8 +66,6 @@ class ArgumentTypeError(HandlerError):
         self.reason = '%s' % arg_name
 
 
-
-
 class EnumError(HandlerError):
     """枚举异常"""
 
@@ -71,6 +75,7 @@ class EnumError(HandlerError):
         self.arg_name = arg_name
         self.reason = '枚举参数错误 %s' % arg_name
 
+
 class AuthError(HandlerError):
     """认证错误"""
 
@@ -79,13 +84,14 @@ class AuthError(HandlerError):
             401, '认证错误 %s' % arg_name)
         self.arg_name = arg_name
         self.reason = '认证错误 %s' % arg_name
-        
+
+
 class CustomException(HandlerError):
     """
     用户传参错误
     """
 
-    def __init__(self,error_info):
-        super(HandlerError,self).__init__(4002,error_info)
+    def __init__(self, error_info):
+        super(HandlerError, self).__init__(4002, error_info)
         self.arg_name = error_info
         self.reason = error_info

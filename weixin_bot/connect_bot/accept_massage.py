@@ -6,9 +6,9 @@
 
 from weixin_bot.client.msg import Msg
 
-class AcceptMassage():
 
-    def __init__(self,msg,client):
+class AcceptMassage():
+    def __init__(self, msg, client):
         self.client = client
         if msg == "欢迎监听微信消息":  # 连接成功
             self.msg_type = "connect_success"
@@ -26,9 +26,9 @@ class AcceptMassage():
         if from_wxid.endswith("chatroom"):
             try:
                 member = text.split(":")[0]
-                a = text.split(":")[1]
-                text = text[text.find(":")+1:].strip()
-            except:
+                # a = text.split(":")[1]
+                text = text[text.find(":") + 1:].strip()
+            except Exception:
                 text = text
                 member = ""
             is_group = True
@@ -66,9 +66,9 @@ class AcceptMassage():
             return "vedio"
         elif self.msg_type == "34":  # 语音
             return "voice"
-        elif self.msg_type == "42":  #名片
+        elif self.msg_type == "42":  # 名片
             return "wecard"
-        elif self.msg_type == "48":  #位置信息
+        elif self.msg_type == "48":  # 位置信息
             return "location"
         elif self.msg_type == "49":  # 连接
             return "link"
@@ -79,12 +79,12 @@ class AcceptMassage():
         elif self.msg_type == "self_bot":
             return "self_bot"
         else:
-            print("没有记录的消息类型",self.msg_type)
+            print("没有记录的消息类型", self.msg_type)
             return self.msg_type
 
     def reply_massage(self):
         massage_type = self.get_msg_type()
-        print("消息类型：",massage_type)
+        print("消息类型：", massage_type)
         subclasses = Msg.__subclasses__()
         for subclass in subclasses:
             if subclass.type_:
@@ -92,5 +92,3 @@ class AcceptMassage():
                     return subclass(self).handle()
             else:
                 raise Exception("子类需复写该属性：type_")
-
-

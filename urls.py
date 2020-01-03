@@ -4,9 +4,10 @@
 # @Author  : JiaoJianglong
 
 
-from bot_manage_handlers.client_handler import ClientHandler,ConnectClientHandler,\
-    ClientLoginHandler,AutoFriendHandler,AutoGroupHandler
-from bot_manage_handlers.bot_handler import BotHandler,BotDetailHandler
+from bot_manage_handlers.client_handler import ClientHandler, \
+    ConnectClientHandler, \
+    ClientLoginHandler, AutoFriendHandler, AutoGroupHandler
+from bot_manage_handlers.bot_handler import BotHandler, BotDetailHandler
 from bot_manage_handlers.friend_handler import FriendHandler
 
 handler = [

@@ -6,18 +6,20 @@ from tornado.web import RequestHandler
 from bot_manage_handlers.base import decorator
 from bot_manage_handlers.base import exceptions
 
+
 class BaseHandler(RequestHandler):
     """
     基础接口模块
     """
     exception = exceptions
     decorator = decorator
-    def __init__(self,*args,**kwargs):
-        super().__init__(*args,**kwargs)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     def init_parameter(self):
         """初始化返回参数"""
-        result = {'code': 200, 'msg': '返回成功','data':{}}
+        result = {'code': 200, 'msg': '返回成功', 'data': {}}
         return result
 
     def initialize(self, **kwargs):
@@ -37,11 +39,3 @@ class BaseHandler(RequestHandler):
         result = self.init_parameter()
         print("接收到options请求")
         return result
-
-
-
-
-
-
-
-

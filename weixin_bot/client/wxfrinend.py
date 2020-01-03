@@ -5,7 +5,6 @@
 
 
 class WxFriend():
-
-    def __init__(self,wxbot,friend_id):
+    def __init__(self, wxbot, friend_id):
         self.wxbot = wxbot
         self.friend_id = friend_id

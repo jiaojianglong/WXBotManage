@@ -13,6 +13,7 @@ for client in clients:
 
 CONNS = TCPClient.connect_list
 
+
 def send_thread():
     while True:
         for i in range(60):
@@ -26,12 +27,9 @@ def send_thread():
                     try:
                         client.stream.write(b"lalala")
                         client.re_connect_num = 0
-                    except:
+                    except Exception:
                         if client.re_connect_num < 100:
                             client.reconnect()
 
 
-
-
 threading.Thread(target=send_thread).start()
-

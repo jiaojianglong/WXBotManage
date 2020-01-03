@@ -6,6 +6,8 @@
 import socket
 from tools.trans_byte_to_string import transformCodec
 from setting import clients
+
+
 class SendMessage():
     def __init__(self, host, port):
         self.host = host
@@ -19,7 +21,7 @@ class SendMessage():
         except Exception as e:
             print(e.args)
             raise e
-        recvData = self.client.recv(4096).decode("gbk")
+        # recvData = self.client.recv(4096).decode("gbk")
 
     def sendmsg_getreturn(self, msg):
         self.connect()
@@ -40,8 +42,11 @@ class SendMessage():
         self.client.sendall(msg.encode("gbk"))
         self.client.close()
 
+
 def login():
-    SendMessage(clients[0]['host'],clients[0]['send_port']).sendmsg("start up")
+    SendMessage(clients[0]['host'], clients[0]['send_port']).sendmsg(
+        "start up")
+
 
 if __name__ == "__main__":
     login()
