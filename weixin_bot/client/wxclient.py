@@ -8,9 +8,9 @@ import time
 from weixin_bot.client.wxbot import WXBot
 from setting import _root
 
-class WXClient():
 
-    def __init__(self,host,send_port,accept_port,sendmassage):
+class WXClient():
+    def __init__(self, host, send_port, accept_port, sendmassage):
         self.host = host
         self.send_port = send_port
         self.accept_port = accept_port
@@ -30,8 +30,8 @@ class WXClient():
         """
         res = self.sendmassage.sendmsg_getreturn("QR code")
         res = res.strip(b"CODE")
-        file_name = "QR_code_%s.jpg"%str(time.time())
-        file = open(_root+"/static/"+file_name,"wb")
+        file_name = "QR_code_%s.jpg" % str(time.time())
+        file = open(_root + "/static/" + file_name, "wb")
         file.write(res)
         file.close()
         return file_name
@@ -43,11 +43,10 @@ class WXClient():
         """
         res = self.sendmassage.sendmsg_getreturn("Friends")
         status_flag = False
-        status = re.search(r"自动通过好友添加验证(?P<status>.*)成功",res).group("status")
+        status = re.search(r"自动通过好友添加验证(?P<status>.*)成功", res).group("status")
         if status == "打开":
             status_flag = True
         return status_flag
-
 
     def auto_group(self):
         """
@@ -83,11 +82,10 @@ class WXClient():
                             weixin_dict['weixin_id'] = weixin_message[3]
                             weixin_dict['weixin_wxid'] = weixin_message[4]
                             weixin_list.append(weixin_dict)
-                        except:
+                        except Exception:
                             pass
                 return weixin_list
         return []
 
-
-    def wx_bot(self,bot_id):
-        return WXBot(self,bot_id)
+    def wx_bot(self, bot_id):
+        return WXBot(self, bot_id)

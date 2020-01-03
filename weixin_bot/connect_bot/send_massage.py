@@ -3,9 +3,6 @@
 # @Time    : 2018/10/14 0014 15:22
 # @Author  : jiaojianglong
 
-
-
-
 import time
 import datetime
 import tornado.ioloop
@@ -13,6 +10,7 @@ import tornado.iostream
 from tornado import gen, queues
 from tornado.tcpclient import TCPClient
 from tools.trans_byte_to_string import transformCodec, transtoCode
+
 
 class SendMessage():
     def __init__(self, host, port, io_loop=None):
@@ -30,24 +28,27 @@ class SendMessage():
         self.lastsend_msg = ""
 
     def change_last_time(self):
-        if self.accept_time-self.lastsend_time < 0.05:
-            print("时间小于0.05，重新发送***********************************************")
+        if self.accept_time - self.lastsend_time < 0.05:
+            print(
+                "时间小于0.05，重新发送***********************************************")
             self.MSG_LIST.put(self.lastsend_msg)
 
     @gen.coroutine
     def connect(self):
         self.stream = yield TCPClient().connect(self.host, self.port)
-        timer = self.io_loop.call_at(self.io_loop.time() + 4, self.timeout_error)
+        timer = self.io_loop.call_at(self.io_loop.time() + 4,
+                                     self.timeout_error)
         try:
-            success_data = yield self.stream.read_until(b"\xcd\xea\xb3\xc9")
-        except:
+            yield self.stream.read_until(b"\xcd\xea\xb3\xc9")
+        except Exception:
             return
         self.io_loop.remove_timeout(timer)
 
     @gen.coroutine
     def send_message_get_return(self, msg):
         yield self.connect()
-        timer = self.io_loop.call_at(self.io_loop.time() + 6, self.timeout_error)
+        timer = self.io_loop.call_at(self.io_loop.time() + 6,
+                                     self.timeout_error)
         if time.time() - self.accept_time > 1:
             print("%s--发送消息：" % datetime.datetime.now(), msg)
             self.lastsend_time = time.time()
@@ -60,11 +61,11 @@ class SendMessage():
                 else:
                     rec_data = transformCodec(rec_data)
                     rec_data = rec_data[:rec_data.find("完成")]
-            except:
+            except Exception:
                 try:
                     resend_num = msg['resend_num']
-                    msg['resend_num'] = resend_num+1
-                except:
+                    msg['resend_num'] = resend_num + 1
+                except Exception:
                     msg['resend_num'] = 1
                 if msg['resend_num'] >= 3:
                     return "error"
@@ -103,7 +104,8 @@ class SendMessage():
                     msg_id = msg['id']
                     return_msg = yield self.send_message_get_return(msg)
                     if return_msg:
-                        self.RETURN_MSG_LIST.append({"id": msg_id, "return_text": return_msg})
+                        self.RETURN_MSG_LIST.append(
+                            {"id": msg_id, "return_text": return_msg})
                 else:
                     yield self.send_message_only(msg)
                 yield gen.sleep(0.3)
@@ -124,5 +126,3 @@ class SendMessage():
                 if return_msg['id'] == id:
                     return return_msg['return_text']
             time.sleep(0.3)
-
-

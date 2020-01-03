@@ -6,19 +6,20 @@
 
 from models.connect.redis import redis_client
 
+
 class Cache(object):
     redis = redis_client
 
     @classmethod
-    def get(cls,key):
+    def get(cls, key):
         try:
             value = redis_client.get(key)
-        except:
+        except Exception:
             value = b""
         if value:
             try:
-                value =  value.decode("utf-8")
-            except:
+                value = value.decode("utf-8")
+            except Exception:
                 value = None
         return value
 

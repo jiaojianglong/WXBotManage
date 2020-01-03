@@ -3,10 +3,6 @@
 # @Time    : 2018/8/29
 # @Author  : JiaoJianglong
 
-
-_author="niyoufa"
-
-
 import logging
 import math
 import json
@@ -19,26 +15,26 @@ import pymongo.command_cursor
 import pymongo.results
 from bson.objectid import ObjectId
 from bson.json_util import dumps
-from tornado.options import options
 
 from setting import MONGO_DB
 from bot_manage_handlers.base import exceptions
 
-
 uri = "mongodb://%s:%s@%s" % (
-        urllib.parse.quote(MONGO_DB.get("USERNAME")),
-        urllib.parse.quote(MONGO_DB.get("PASSWORD")),
-        "%s:%s/%s" %
-        (MONGO_DB.get("HOST"), MONGO_DB.get("PORT"), MONGO_DB.get("DB")))
+    urllib.parse.quote(MONGO_DB.get("USERNAME")),
+    urllib.parse.quote(MONGO_DB.get("PASSWORD")),
+    "%s:%s/%s" %
+    (MONGO_DB.get("HOST"), MONGO_DB.get("PORT"), MONGO_DB.get("DB")))
 
 mongo_client = pymongo.MongoClient(uri)
 
-info = "初始化mongodb客户端:%s"%str(mongo_client)
+info = "初始化mongodb客户端:%s" % str(mongo_client)
 logging.warning("\033[1;32;40m" + str(info) + "\033[0m")
+
 
 class MongoDB():
     exceptionlib = exceptions
     name = ""
+
     def __init__(self):
         self.coll = self.get_coll()
 
@@ -61,10 +57,10 @@ class MongoDB():
         if not isinstance(vals, dict):
             raise Exception("vals 参数类型错误！")
         for column in columns:
-            if not column in vals or not vals.get(column):
-                raise Exception("字段%s不能为空！"%column)
+            if column not in vals or not vals.get(column):
+                raise Exception("字段%s不能为空！" % column)
 
-    def get_count(self,query_params):
+    def get_count(self, query_params):
         query_params.update(
             is_enable=True,
         )
@@ -84,28 +80,30 @@ class MongoDB():
                 obj = {}
         return self.dump(obj)
 
-    def create(self,vals,*args,**kwargs):
+    def create(self, vals, *args, **kwargs):
         curr_time = str(datetime.datetime.now())
         vals["create_date"] = curr_time
         vals["write_date"] = curr_time
         vals["is_enable"] = True
 
         vals["maintain"] = [dict(
-            operation_time = curr_time,
-            user_name ="未知",
-            operation_type = "create",
+            operation_time=curr_time,
+            user_name="未知",
+            operation_type="create",
         )]
         self.coll.insert_one(vals)
         return self.dump(vals)
 
     def find_one(self, *args, **kwargs):
         # 检查查询参数
-        if not "query_params" in kwargs:
+        if "query_params" not in kwargs:
             raise Exception("查询参数query_params不存在！")
         if not isinstance(kwargs.get("query_params"), dict):
-            raise Exception("查询参数query_params:%s, 类型错误！"%kwargs.get("query_params"))
+            raise Exception(
+                "查询参数query_params:%s, 类型错误！" % kwargs.get("query_params"))
         if not kwargs.get("query_params"):
-            raise Exception("查询参数query_params:%s, 不能为空！"%kwargs.get("query_params"))
+            raise Exception(
+                "查询参数query_params:%s, 不能为空！" % kwargs.get("query_params"))
 
         # 查询参数
         query_params = kwargs.get("query_params")
@@ -114,10 +112,10 @@ class MongoDB():
         ))
         obj = self.coll.find_one(query_params)
         if not obj:
-            raise Exception("不存在:%s！"%query_params)
+            raise Exception("不存在:%s！" % query_params)
         return self.dump(obj)
 
-    def search(self,page=1,page_size=10,*args,**kwargs):
+    def search(self, page=1, page_size=10, *args, **kwargs):
         # 查询参数
         query_params = kwargs.get("query_params") or {}
         query_params.update(dict(
@@ -129,7 +127,7 @@ class MongoDB():
         if sort_params == {}:
             sort_params.update({"create_date": -1})
 
-        if kwargs.get("pager_flag") != False:
+        if kwargs.get("pager_flag") is not False:
             pager_flag = True  # 是否分页
         else:
             pager_flag = False
@@ -155,7 +153,7 @@ class MongoDB():
 
         return ids, pager
 
-    def read(self,ids,fields=None,*args,**kwargs):
+    def read(self, ids, fields=None, *args, **kwargs):
         query_params = {}
         query_params.update(dict(
             is_enable=True,
@@ -166,7 +164,7 @@ class MongoDB():
             id = self.create_objectid(_id)
             objectids.append(id)
         query_params.update({
-            "_id":{"$in":objectids}
+            "_id": {"$in": objectids}
         })
 
         cr = self.coll.aggregate([
@@ -177,7 +175,7 @@ class MongoDB():
             objs.append(obj)
         return objs
 
-    def search_read(self,page=1,page_size=10,*args,**kwargs):
+    def search_read(self, page=1, page_size=10, *args, **kwargs):
         # 查询参数
         query_params = kwargs.get("query_params") or {}
         query_params.update(dict(
@@ -187,7 +185,7 @@ class MongoDB():
         # 排序参数
         sort_params = kwargs.get("sort_params")
 
-        if kwargs.get("pager_flag") != False:
+        if kwargs.get("pager_flag") is not False:
             pager_flag = True  # 是否分页
         else:
             pager_flag = False
@@ -196,7 +194,7 @@ class MongoDB():
         if isinstance(_project, str):
             try:
                 _project = json.loads(_project)
-            except:
+            except Exception:
                 raise Exception("_project参数格式错误！")
         if not isinstance(_project, dict):
             raise Exception("_project参数格式错误！")
@@ -205,7 +203,7 @@ class MongoDB():
         pager = self.count_page(0, page, page_size)
         try:
             aggregate_obj = [
-                    {"$match": query_params},
+                {"$match": query_params},
             ]
 
             if sort_params:
@@ -221,7 +219,7 @@ class MongoDB():
 
             if _project:
                 aggregate_obj.extend([
-                    {"$project":_project},
+                    {"$project": _project},
                 ])
 
             cr = self.aggregate(aggregate_obj)
@@ -230,7 +228,7 @@ class MongoDB():
                 obj = self.dump(obj)
                 objs.append(obj)
 
-        except:
+        except Exception:
             raise
 
         for obj in objs:
@@ -240,7 +238,7 @@ class MongoDB():
 
         return objs, pager
 
-    def write(self,vals,ids=[],*args,**kwargs):
+    def write(self, vals, ids=[], *args, **kwargs):
         query_params = {}
         query_params.update(dict(
             is_enable=True,
@@ -257,7 +255,7 @@ class MongoDB():
         cr = self.coll.find(query_params)
         curr_date = str(datetime.datetime.now())
         vals.update(dict(
-            write_date = curr_date,
+            write_date=curr_date,
         ))
         for obj in cr:
             obj.update(vals)
@@ -270,14 +268,14 @@ class MongoDB():
             obj["maintain"] = obj["maintain"][0:] + obj["maintain"][:-1]
             self.coll.save(obj)
 
-    def update(self,vals,*args,**kwargs):
+    def update(self, vals, *args, **kwargs):
         query_params = kwargs.get("query_params") or {}
         if not query_params:
             raise self.exceptionlib.CustomException("查询参数不能为空！")
 
         count = self.get_count(query_params)
         if count != 1:
-            raise Exception("需要更新的数据个数：%s, 查询条件错误：%s！"%(count, query_params))
+            raise Exception("需要更新的数据个数：%s, 查询条件错误：%s！" % (count, query_params))
 
         query_params.update(dict(
             is_enable=True,
@@ -312,7 +310,7 @@ class MongoDB():
             raise self.exceptionlib.CustomException("查询参数类型错误，必须是dict类型！")
         else:
             filter.update(dict(
-                is_enable = True,
+                is_enable=True,
             ))
         if not update:
             raise self.exceptionlib.CustomException("更新参数不能为空！")
@@ -321,13 +319,13 @@ class MongoDB():
         else:
             if "$set" in update and isinstance(update["$set"], dict):
                 update["$set"].update(dict(
-                    write_date = str(datetime.datetime.now())
+                    write_date=str(datetime.datetime.now())
                 ))
         update_result_obj = self.coll.update_many(filter, update=update)
         update_result = dict(
-            acknowledged = update_result_obj.acknowledged,
-            matched_count = update_result_obj.matched_count,
-            modified_count = update_result_obj.modified_count,
+            acknowledged=update_result_obj.acknowledged,
+            matched_count=update_result_obj.matched_count,
+            modified_count=update_result_obj.modified_count,
         )
         return update_result
 
@@ -348,7 +346,7 @@ class MongoDB():
             raise self.exceptionlib.CustomException("docs 不能为空！")
         self.coll.insert(docs)
 
-    def unlink(self,ids,*args,**kwargs):
+    def unlink(self, ids, *args, **kwargs):
         query_params = kwargs.get("query_params") or {}
         query_params.update(dict(
             is_enable=True,
@@ -360,13 +358,13 @@ class MongoDB():
             objectids.append(id)
 
         query_params.update({
-            "_id":{"$in":objectids}
+            "_id": {"$in": objectids}
         })
 
         cr = self.coll.find(query_params)
         curr_date = str(datetime.datetime.now())
         for obj in cr:
-            obj.update({"write_date":curr_date,"is_enable":False})
+            obj.update({"write_date": curr_date, "is_enable": False})
             self.coll.save(obj)
 
     def delete(self, *args, **kwargs):
@@ -377,13 +375,13 @@ class MongoDB():
         cr = self.coll.find(query_params)
         print(cr)
         if not cr:
-            raise exceptions.CustomException("不存在%s"%query_params)
+            raise exceptions.CustomException("不存在%s" % query_params)
         curr_date = str(datetime.datetime.now())
         for obj in cr:
             obj.update({"write_date": curr_date, "is_enable": False})
             self.coll.save(obj)
 
-    def search_unlink(self,*args, **kwargs):
+    def search_unlink(self, *args, **kwargs):
         query_params = kwargs.get("query_params") or {}
         query_params.update(dict(
             is_enable=True,
@@ -402,12 +400,12 @@ class MongoDB():
                 isinstance(obj, pymongo.command_cursor.CommandCursor):
             result = []
             for _s in obj:
-                if type(_s) == type({}):
+                if isinstance(_s, dict):
                     s = {}
                     for (k, v) in _s.items():
-                        if type(v) == type(ObjectId()):
+                        if isinstance(v, ObjectId):
                             s[k] = json.loads(dumps(v))['$oid']
-                        elif type(v) == type(datetime.datetime.utcnow()):
+                        elif isinstance(v, datetime.datetime.utcnow):
                             s[k] = v.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
                         else:
                             s[k] = v
@@ -416,9 +414,9 @@ class MongoDB():
                 result.append(s)
         elif isinstance(obj, dict):
             for (k, v) in obj.items():
-                if type(v) == type(ObjectId()):
+                if isinstance(v, ObjectId):
                     obj[k] = json.loads(dumps(v))['$oid']
-                elif type(v) == type(datetime.datetime.utcnow()):
+                elif isinstance(v, datetime.datetime.utcnow):
                     obj[k] = v.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
             result = obj
         elif isinstance(obj, pymongo.results.InsertOneResult):
@@ -434,7 +432,7 @@ class MongoDB():
     def create_objectid(self, str=None):
         try:
             object_id = ObjectId(str)
-        except:
+        except Exception:
             object_id = ''
         return object_id
 
@@ -449,7 +447,8 @@ class MongoDB():
                     "skip": 0}
         max_page = int(math.ceil(float(length) / page_size))
         page_num = int(math.ceil(float(page) / page_show))
-        pages = list(range(1, max_page + 1)[((page_num - 1) * page_show):(page_num * page_show)])
+        pages = list(range(1, max_page + 1)[
+                     ((page_num - 1) * page_show):(page_num * page_show)])
         skip = (page - 1) * page_size
         if page >= max_page:
             has_more = False

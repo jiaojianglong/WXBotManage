@@ -16,10 +16,13 @@ from tools.trans_byte_to_string import transformCodec
 from weixin_bot.connect_bot.accept_massage import AcceptMassage
 from weixin_bot.connect_bot.send_massage import SendMessage
 from weixin_bot.client.wxclient import WXClient
-#TCP连接客户端实例
-#需每隔100秒发送一条消息，避免连接断开
+
+
+# TCP连接客户端实例
+# 需每隔100秒发送一条消息，避免连接断开
 class TCPClient(object):
     connect_list = []
+
     def __init__(self, client, io_loop=None):
         self.id = client['_id']
         self.name = client['name']
@@ -27,7 +30,7 @@ class TCPClient(object):
         self.accept_port = int(client['accept_port'])
         self.send_port = int(client['send_port'])
         self.client_info = client
-        self.connect_state = False   #连接状态
+        self.connect_state = False  # 连接状态
         self.connecting = False
         self.io_loop = io_loop or tornado.ioloop.IOLoop.current()
         self.shutdown = False
@@ -35,13 +38,15 @@ class TCPClient(object):
         self.sock_fd = None
         self.EOF = b"\xcd\xea\xb3\xc9"
         self.re_connect_num = 0
-        self.sendmassage = SendMessage(self.host,self.send_port)
-        self.client = WXClient(self.host,self.send_port,self.accept_port,self.sendmassage)
+        self.sendmassage = SendMessage(self.host, self.send_port)
+        self.client = WXClient(self.host, self.send_port, self.accept_port,
+                               self.sendmassage)
 
     def get_stream(self):
         self.sock_fd = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
         self.stream = tornado.iostream.IOStream(self.sock_fd)
-    #创建连接
+
+    # 创建连接
     def connect(self):
         self.connecting = True
         self.get_stream()
@@ -57,7 +62,6 @@ class TCPClient(object):
         self.get_stream()
         self.stream.connect((self.host, self.accept_port), self.start)
         self.stream.set_close_callback(self.on_close)
-
 
     def start(self):
         if self not in self.connect_list:
@@ -91,10 +95,11 @@ class TCPClient(object):
             self.connect_list.remove(self)
         self.io_loop.close_fd(self.sock_fd)
         print("断开连接")
-    #接收消息时调用
+
+    # 接收消息时调用
     def data_reply(self, **kwargs):
         data = kwargs.get("data")
         msg = transformCodec(data)
         msg = msg[:msg.find("完成")]
         print("%s--接收消息：" % datetime.datetime.now(), msg)
-        AcceptMassage(msg,self).reply_massage()
+        AcceptMassage(msg, self).reply_massage()
