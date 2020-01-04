@@ -8,9 +8,9 @@ import os
 _root = os.path.dirname(__file__)
 
 MONGO_DB = dict(
-    HOST="127.0.0.1",
-    PORT=8975,
-    DB="admin",
-    USERNAME="admin",
-    PASSWORD="root",
+    HOST="192.168.0.108",
+    PORT=27018,
+    DB="wxmanage",
+    USERNAME="wxmanage",
+    PASSWORD="wxmanage",
 )

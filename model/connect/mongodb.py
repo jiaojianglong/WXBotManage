@@ -416,7 +416,7 @@ class MongoDB():
             for (k, v) in obj.items():
                 if isinstance(v, ObjectId):
                     obj[k] = json.loads(dumps(v))['$oid']
-                elif isinstance(v, datetime.datetime.utcnow):
+                elif isinstance(v, datetime.datetime):
                     obj[k] = v.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
             result = obj
         elif isinstance(obj, pymongo.results.InsertOneResult):

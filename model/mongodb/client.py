@@ -10,7 +10,7 @@ from bson.objectid import ObjectId
 
 class Client(MongoDB):
     _fields = ["name", "host", "send_port", "accept_port"]
-    name = "x_qa.client"
+    name = "wxmanage.client"
 
     def get_all_clients(self):
         res = self.search_read(pager_flag=False)[0]

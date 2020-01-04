@@ -3,7 +3,6 @@
 # @Time    : 2018/10/14 0014 11:49
 # @Author  : jiaojianglong
 import time
-import threading
 from weixin_bot.connect_bot.tcp_client import TCPClient
 from model.mongodb.client import Client
 
@@ -30,6 +29,3 @@ def send_thread():
                     except Exception:
                         if client.re_connect_num < 100:
                             client.reconnect()
-
-
-threading.Thread(target=send_thread).start()

@@ -7,7 +7,7 @@ from model.connect.mongodb import MongoDB
 
 
 class WXbot(MongoDB):
-    name = "x_qa.bot"
+    name = "wxmanage.bot"
     _field = ["nickname", "wxid", "phone", "last_login_client"]
 
     def search_read(self, page=1, page_size=10, *args, **kwargs):

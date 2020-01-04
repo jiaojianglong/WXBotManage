@@ -72,8 +72,6 @@ def threadpool_decorator(func):
     @wraps(func)
     def wrapper(self, *args, **kwargs):
         self.executor = executor
-        self.add_header('Access-Control-Allow-Origin', '*')
-        self.add_header('Access-Control-Allow-Methods', '*')
         res = yield run(self, func, *args, **kwargs)
         return res
 

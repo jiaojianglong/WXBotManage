@@ -8,7 +8,7 @@ from model.connect.mongodb import MongoDB
 
 
 class FriendModel(MongoDB):
-    name = "x_qa.friend"
+    name = "wxmanage.friend"
 
     def save_or_update(self, friend, bot_id, bot_name):
         head_url = "https://timgsa.baidu.com/timg?image&quality=80&size=" \
